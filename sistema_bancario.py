@@ -26,7 +26,7 @@ menu = """
 limite = 500
 extrato = ''
 saldo = 0
-limite_de_saque = 3
+limite_de_saque = 36
 
 while True:
     

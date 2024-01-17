@@ -1,19 +1,5 @@
 import os
 
-def pausa():
-    input('''\n
-    Enter para continuar...''')
-    os.system('clear')
-
-
-def mensage(resposta):
-    if resposta == True:
-        print('''\n
-    Operação com sucesso...''')
-    else:
-        print('''\n
-    Operação falhou!''')
-
 menu = """
 
     [d] Depositar
@@ -26,7 +12,8 @@ menu = """
 limite = 500
 extrato = ''
 saldo = 0
-limite_de_saque = 36
+numero_saques = 0
+LIMITE_SAQUE = 3
 
 while True:
     
@@ -42,49 +29,60 @@ while True:
         
         if valor > 0:
             saldo += valor
-            extrato += f'\nR$ {valor:>10.2f} +'
-            mensage(1)
+            extrato += f'\nDeposito: R$ {valor:>10.2f}'
+            print('\nOperação realizada com sucesso...')
         else:
-            mensage(0)
+            print('\nOperação falhou!\n')
 
-        pausa()
+        input('\nPrecione Enter para continuar...')
+        os.system('clear')
 
     elif opcao == 's':
 
         os.system('clear')
         valor = float(input('Digite o valor do saque: '))
 
-        if limite_de_saque <=0:
-            print('\n    Limite de saque no dia excedido...')
-            pausa()
+        if numero_saques >= LIMITE_SAQUE:
+            print('\nLimite de saque no dia excedido...\n')
+            input('\nPrecione Enter para continuar...')
+            os.system('clear')
         elif saldo < valor:
-            print('\n    Saldo insuficiente...')
-            pausa()
+            print('\nSaldo insuficiente...\n')
+            input('\nPrecione Enter para continuar...')
+            os.system('clear')
         elif valor > 500:
-            print('\n    Limite de saque excedido...')
-            pausa()
+            print('\nLimite de saque excedido...\n')
+            input('\nPrecione Enter para continuar...')
+            os.system('clear')
         elif valor > 0:
             saldo -= valor
-            extrato += f'\nR$ {valor:>10.2f} -'
-            limite_de_saque -= 1
-            mensage(1)
-            pausa()
+            extrato += f'\nSaque:    R$ {valor:>10.2f}'
+            numero_saques += 1
+            print('\nOperação realizada com sucesso...\n')
+            input('\nPrecione Enter para continuar...')
+            os.system('clear')
         else:
-            print('\n    Valor inválido...')
-            pausa()
+            print('\nValor inválido...\n')
+            input('\nPrecione Enter para continuar...')
+            os.system('clear')
 
     elif opcao == 'e':
         os.system('clear')
-        print('******* EXTRATO ********\n')
-        print(extrato)
-        print(f'\nR$ {saldo:>10.2f} S')
-        pausa()
+        print('******* EXTRATO ********')
+        if extrato == '':
+            print('\nNão foram realizadas movimentações.\n')
+        else:
+            print(extrato)
+            print(f'\nSaldo:    R$ {saldo:>10.2f}')
+        input('\nPrecione Enter para continuar...')
+        os.system('clear')
 
     elif opcao == 'q':
         os.system('clear')
-        print('\n    Obrigado... Até Breve!\n\n\n')
+        print('\nObrigado... Até Breve!\n\n\n')
         break
 
     else:
-        print('\n    Opção inválida...')
-        pausa()
+        print('\nOpção inválida...\n')
+        input('\nPrecione Enter para continuar...')
+        os.system('clear')

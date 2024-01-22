@@ -1,7 +1,25 @@
 import os
+import textwrap
 from validarcpf import ValidarCPF
 
 
+def menu():
+    menu = """
+
+        Escolha a opção:
+
+        [d]\tDepositar
+        [s]\tSacar
+        [c]\tConsultar Extrato
+        [c]\tCadastrar Cliente
+        [l]\tListar Clientes
+        [a]\tCadastrar Conta
+        [q]\tSair
+
+        => """
+    return input(textwrap.dedent(menu))
+
+        
 def tratar_dados(string):
     # Dividir a string em partes usando vírgula como delimitador
     partes = string.split(',')
@@ -14,132 +32,116 @@ def tratar_dados(string):
 
 def cadastrar_cliente():
     cliente = dict()
-    cpf = input('Digite o CPF: ')
+    cpf = input('\nDigite o CPF: ')
     # Validando CPF
     if not ValidarCPF.validar_cpf(cpf):
-        print('CPF não é válido')
+        print('\nATENÇÃO! CPF não é válido')
     else:
-        if cpf in clientes:
-            print('Cliente já cadastrado!')
+        # Verificando se o cliente já está cadastrado
+        if any(cliente['cpf'] == cpf for cliente in clientes):
+            print('\nATENÇÃO! Cliente já cadastrado!')
         else:
             # Recebendo dados de clientes
             cliente['cpf'] = cpf
-            print('Digite o nome do cliente:', end=' ')
+            print('\nDigite o nome do cliente:', end=' ')
             nome = tratar_dados(input().upper())
             cliente['nome'] = nome[0]
             cliente['data_nascimento'] = input('Digite a data de nascimento (dd/mm/aaaa):')
-            print('Digite Rua, num, bairro, cidade, UF (usar ","):', end=' ')
+            print('\nDigite Rua, num, bairro, cidade, UF (usar ","):', end=' ')
             endereco = tratar_dados(input().upper())
             cliente['endereco'] = f'{endereco[0]}, {endereco[1]} - {endereco[2]} - {endereco[3]}/{endereco[4]}'
             clientes.append(cliente)
-            del cliente
 
 
-def depositar(saldo, consulta):
-    limpar_tela()
-    valor = float(input('\n    Digite o valor do depósito: '))
+def depositar(saldo, extrato, valor, /):
 
     if valor > 0:
         saldo += valor
-        consulta += f'\nR$ {valor:>10.2f} +'
+        extrato += f'\nDeposito:  R$ {valor:>10.2f}'
         mensagem('sucesso')
     else:
         mensagem('erro')
 
-    return saldo, consulta
 
-
-def sacar(saldo, consulta, limite_de_saque):
-    limpar_tela()
+def sacar():
+    global extrato, saldo,
     valor = float(input('\n    Digite o valor do saque: '))
-
     if limite_de_saque <= 0:
-        mensagem('limite_saque_dia')
         print('\n    Limite de saque no dia excedido...')
     elif saldo < valor:
         print('\n    Saldo insuficiente...')
     elif valor > 0:
         saldo -= valor
-        consulta += f'\nR$ {valor:>10.2f} -'
+        extrato += f'\nSaque:  R$ {valor:>10.2f}'
         limite_de_saque -= 1
         mensagem('sucesso')
     else:
-        mensagem('opcao_invalida')
-
-    return saldo, consulta, limite_de_saque
+        print('\nOPÇÃO INVÁLIDA!')
 
 
-def consultar(saldo, consulta):
-    limpar_tela()
-    print(consulta)
-    print(f'\nR$ {saldo:>10.2f} +')
-    pausar()
+def exibir_extrato(saldo, /, *, extrato):
+    if extrato == '':
+        print('\n    Não foram realizadas operações...')
+    else:
+        extrato = '\n******* EXTRATO ********\n'
+    print(extrato)
+    print(f'\nSaldo:  R$ {saldo:>10.2f}')
+    return saldo, extrato
 
 
 def mensagem(resposta):
-    limpar_tela()
     if resposta == 'sucesso':
         print('\n    Operação com sucesso...')
     elif resposta == 'erro':
         print('\n    Operação falhou!')
     elif resposta == 'opcao_invalida':
         print('\n    Opção inválida!')
-    elif resposta == 'limite_saque_dia':
-        print('\n    Limite de saque no dia excedido...')
     elif resposta == 'sair':
         print('\n    Obrigado por utilizar nossos...')
-    pausar()
 
 
-def limpar_tela():
-    os.system('clear')  # Substitua por métodos mais portáteis para limpar a tela
+def main():
+    LIMITE_DE_SAQUE = 3
+    AGENCIA = '0001'
 
-
-def pausar():
-    input('''\n\n
-    Precione enter para continuar...''')
-    limpar_tela()
-
-
-if __name__ == '__main__':
-    clientes = []
-    limite_de_saque = 3
-    limite = 500
-    consulta = '******* EXTRATO ********\n'
     saldo = 0
+    limite = 500
+    extrato = ''
+    clientes = []
+    contas = []
 
     while True:
-        menu = """
+        opcao = menu()
 
-        Escolha a opção:
+        if opcao == 'd':
+            valor = float(input('\n    Digite o valor do depósito: '))
 
-        [cc] Cadastrar Cliente
-        [c] Consultar Extrato
-        [d] Depositar
-        [s] Sacar
-        [lc] Listar Clientes
-        [q] Sair
+            saldo, extrato = depositar(saldo, extrato, valor)
 
-        => """
-
-        opcao = input(menu)
-
-        if opcao == 'cc':
-            cadastrar_cliente()
-        elif opcao == 'd':
-            saldo, consulta = depositar(saldo, consulta)
         elif opcao == 's':
-            saldo, consulta, limite_de_saque = sacar(saldo, consulta, limite_de_saque)
+            sacar()
+
         elif opcao == 'c':
-            consultar(saldo, consulta)
+            exibir_extrato(saldo, extrato=)
+
+        elif opcao == 'c':
+            cadastrar_cliente()
+
+        elif opcao == 'l':
+            print(clientes)
+
+        elif opcao == 'a':
+            pass
+
         elif opcao == 'q':
             mensagem('sair')
             break
-        elif opcao == 'lc':
-            print(clientes)
+
         else:
             mensagem('opcao_invalida')
 
 
 
 
+if __name__ == '__main__':
+    main()

@@ -1,4 +1,3 @@
-import os
 import textwrap
 from validarcpf import ValidarCPF
 
@@ -11,7 +10,7 @@ def menu():
         [d]\tDepositar
         [s]\tSacar
         [c]\tConsultar Extrato
-        [c]\tCadastrar Cliente
+        [u]\tCadastrar Cliente
         [l]\tListar Clientes
         [a]\tCadastrar Conta
         [q]\tSair
@@ -30,7 +29,7 @@ def tratar_dados(string):
     return partes_tratadas
 
 
-def cadastrar_cliente():
+def cadastrar_cliente(clientes):
     cliente = dict()
     cpf = input('\nDigite o CPF: ')
     # Validando CPF
@@ -53,18 +52,18 @@ def cadastrar_cliente():
             clientes.append(cliente)
 
 
-def depositar(saldo, extrato, valor, /):
+def depositar(saldo, valor, extrato, /):
 
     if valor > 0:
         saldo += valor
         extrato += f'\nDeposito:  R$ {valor:>10.2f}'
-        mensagem('sucesso')
+        
     else:
-        mensagem('erro')
+        pass
 
 
 def sacar():
-    global extrato, saldo,
+    global extrato, saldo
     valor = float(input('\n    Digite o valor do saque: '))
     if limite_de_saque <= 0:
         print('\n    Limite de saque no dia excedido...')
@@ -74,12 +73,12 @@ def sacar():
         saldo -= valor
         extrato += f'\nSaque:  R$ {valor:>10.2f}'
         limite_de_saque -= 1
-        mensagem('sucesso')
+        
     else:
         print('\nOPÇÃO INVÁLIDA!')
 
 
-def exibir_extrato(saldo, /, *, extrato):
+def exibir_extrato():
     if extrato == '':
         print('\n    Não foram realizadas operações...')
     else:
@@ -89,9 +88,9 @@ def exibir_extrato(saldo, /, *, extrato):
     return saldo, extrato
 
 
-def mensagem(resposta):
+def resposta_ao_cliente(resposta):
     if resposta == 'sucesso':
-        print('\n    Operação com sucesso...')
+        print('\n    Operação realizada com sucesso...')
     elif resposta == 'erro':
         print('\n    Operação falhou!')
     elif resposta == 'opcao_invalida':
@@ -116,31 +115,29 @@ def main():
         if opcao == 'd':
             valor = float(input('\n    Digite o valor do depósito: '))
 
-            saldo, extrato = depositar(saldo, extrato, valor)
+            saldo, extrato = depositar(saldo, valor, extrato)
 
         elif opcao == 's':
-            sacar()
+            pass
 
         elif opcao == 'c':
-            exibir_extrato(saldo, extrato=)
+            pass
 
         elif opcao == 'c':
-            cadastrar_cliente()
+            pass
 
         elif opcao == 'l':
-            print(clientes)
+            pass
 
         elif opcao == 'a':
             pass
 
         elif opcao == 'q':
-            mensagem('sair')
+            pass
             break
 
         else:
-            mensagem('opcao_invalida')
-
-
+            pass
 
 
 if __name__ == '__main__':
